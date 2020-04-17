@@ -1,26 +1,53 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useState, useCallback} from 'react';
+import './App.css'
 
-function App() {
-  return (
+
+class App extends React.Component {
+
+  constructor(props) {
+
+  super(props);
+  
+  this.state = {
+    items: [],
+    isLoaded: false,
+  }
+}
+
+componentDidMount() {
+  fetch('http://jsonplaceholder.typicode.com/photos')
+    .then(res => res.json())
+    .then(json => {
+      this.setState({
+        isLoaded: true,
+        items: json,
+
+      })    
+  })
+}
+render() {
+
+  const {isLoaded, items } = this.state;
+
+  if (!isLoaded) {
+    return <div>Loadding...</div>;
+
+    return(
+      <div>Data loaded</div>
+    )
+  }
+
+  return(
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div>{items.map(item => (
+        <div className="kuvat" key={items.id}>
+          <img src={item.url} alt="kuva" />
+        </div>
+  ))}
+      </div>
     </div>
   );
+}
 }
 
 export default App;
